@@ -16,6 +16,16 @@ because of two things:
   driven wiki-like thing that TiddlyWeb is: We need browsers to
   validate content.
 
+There is the option of configuring varnish to validate ETags but that
+would require a request back to origin on every request to cache. In
+some cases that's probably the right thing, but for the purposes of
+this plugin we're going a different way. If that is desired these
+resources may be of use:
+
+* [Backend Conditional Requests](https://www.varnish-cache.org/trac/wiki/BackendConditionalRequests)
+* [A stack overflow answer](http://stackoverflow.com/a/13566370/225997) needs confirmation. Does that work?
+* [Cache content validation VCL](https://github.com/allancrooks/vcl-cache-validation)
+
 ### Purging Hooks
 
 Therefore this plugin needs to accomplish one primary thing:
