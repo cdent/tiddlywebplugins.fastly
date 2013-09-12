@@ -1,5 +1,5 @@
 
-# Introduction
+## Introduction
 
 `tiddlywepblugins.fastly` will provide the necessary tools to run a
 [TiddlyWeb](http://tiddlyweb.com/) instance behind
@@ -16,7 +16,7 @@ because of two things:
   driven wiki-like thing that TiddlyWeb is: We need browsers to
   validate content.
 
-## Purging Hooks
+### Purging Hooks
 
 Therefore this plugin needs to accomplish one primary thing:
 
@@ -41,7 +41,7 @@ structure which has as its value a container of all those resources
 which use that key. With that it is possible to ask to purge a key
 resulting in many resources being purged.
 
-## Middleware
+### Middleware
 
 Therefore this plugin needs to accomplish a secondary thing:
 
@@ -57,12 +57,12 @@ associated with the bag.
 Unfortunately this still leaves search results as not very cacheable
 and any tiddler change will need to purge all search related entities.
 
-## Stats, Perhaps
+### Stats, Perhaps
 
 A third thing the plugin might do is retrieve and present stats
 from the Fastly API through a `twanager` command.
 
-## Dealing with Auth
+### Dealing with Auth
 
 Finally, all of the above ignores authN and authZ. If we want to deal
 with protected resources anywhere on the service we will have users
@@ -93,7 +93,7 @@ This means that we end up with per-user caches for most URIs but may
 be a valid second step (the first step is getting the purging
 working).
 
-# Implementation
+## Implementation
 
 [fastly-py](https://github.com/fastly/fastly-py) provides a Python
 based interface to the Fastly API. We need to know a service id and an
@@ -108,7 +108,7 @@ entity currently being written. These answer the questions:
 
 The first is used in the middleware, the second in the store HOOKS.
 
-# Discoveries, Hacks
+## Discoveries, Hacks
 
 * While experimenting it was discovered that 302 responses are cached.
   This is weird given the "temporarily" part and also got in the way
