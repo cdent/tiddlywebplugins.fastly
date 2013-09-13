@@ -22,5 +22,6 @@ def test_tiddler_to_keys():
 
     keys = entity_to_keys(tiddler)
 
+    assert len(keys) == 2
     assert tiddler_key in keys
     assert bag_key in keys
