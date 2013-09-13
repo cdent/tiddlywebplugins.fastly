@@ -16,6 +16,8 @@ because of two things:
   driven wiki-like thing that TiddlyWeb is: We need browsers to
   validate content.
 
+### Aside on Conditionals
+
 There is the option of configuring varnish to validate ETags but that
 would require a request back to origin on every request to cache. In
 some cases that's probably the right thing, but for the purposes of
@@ -32,6 +34,9 @@ Therefore this plugin needs to accomplish one primary thing:
 
 * Send purges to the Fastly service when content is `PUT`. This is
   straightforward for single entities with Store HOOKS.
+
+_This, of course, assumes that instant purges are in fact somewhat
+instant._
 
 It is less straightforward with entity collections, especially
 tiddlers produced by a recipe. Consider:
@@ -103,6 +108,11 @@ This means that we end up with per-user caches for most URIs but may
 be a valid second step (the first step is getting the purging
 working).
 
+### Varnish
+
+Assuming this all works then creating a version for plain varnish out
+to be possible. Starting with Fastly for hopefully obvious reasons.
+
 ## Implementation
 
 [fastly-py](https://github.com/fastly/fastly-py) provides a Python
@@ -130,3 +140,8 @@ if ( beresp.status == 302 ) {
     return(pass);
 }
 ```
+
+* Is it the case that by default anybody can PURGE anything if they
+  know the URI?
+
+* PURGE are passed to api.fastly.com which is a twistedweb.
