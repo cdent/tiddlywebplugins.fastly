@@ -12,6 +12,7 @@ the right keys are.
 from tiddlywebplugins.fastly.surrogates import entity_to_keys, uri_to_keys
 
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 
 
@@ -45,3 +46,19 @@ def test_bag_to_keys():
     assert len(keys) == 2
     assert bag_key in keys
     assert bag_tiddler_key in keys
+
+
+def test_recipe_to_keys():
+    """
+    A single recipe's keys are itself and it's tiddlers.
+    """
+    recipe = Recipe('recipeone')
+
+    recipe_key = 'R:recipeone'
+    recipe_tiddler_key = 'RT:recipeone'
+
+    keys = entity_to_keys(recipe)
+
+    assert len(keys) == 2
+    assert recipe_key in keys
+    assert recipe_tiddler_key in keys

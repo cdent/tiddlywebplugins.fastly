@@ -29,6 +29,13 @@ def bag_to_keys(bag):
     return [bag_key(bag.name), bag_tiddler_key(bag.name)]
 
 
+def recipe_to_keys(recipe):
+    """
+    Returns keys for the recipe itself and it's tiddlers.
+    """
+    return [recipe_key(recipe.name), recipe_tiddler_key(recipe.name)]
+
+
 def tiddler_to_keys(tiddler):
     """
     Return keys for the tiddler itself and the tiddler's bag's tiddlers.
@@ -41,6 +48,13 @@ def bag_key(bag_name):
     Key for a single bag.
     """
     return 'B:%s' % encode_name(bag_name)
+
+
+def recipe_key(recipe_name):
+    """
+    Key for a single recipe.
+    """
+    return 'R:%s' % encode_name(recipe_name)
 
 
 def tiddler_key(tiddler):
@@ -58,10 +72,17 @@ def bag_tiddler_key(bag_name):
     return 'BT:%s' % encode_name(bag_name)
 
 
+def recipe_tiddler_key(recipe_name):
+    """
+    Key for a recipe's tiddlers.
+    """
+    return 'RT:%s' % encode_name(recipe_name)
+
+
 # XXX: this is rather naive and useless at the moment
 DISPATCH = {
     'tiddler': tiddler_to_keys,
     'bag': bag_to_keys,
-    #'recipe': recipe_to_keys,
+    'recipe': recipe_to_keys,
 }
 
