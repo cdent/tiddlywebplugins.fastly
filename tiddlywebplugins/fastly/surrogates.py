@@ -5,8 +5,16 @@ This will slowly evolve to be more declarative as it is basically
 just templates.
 """
 
+from tiddlyweb.control import determine_bag_from_recipe
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.util import superclass_name
-from tiddlyweb.web.util import encode_name
+from tiddlyweb.web.util import encode_name, get_route_value
+
+
+GLOBAL_URIS = ['/recipes', '/bags', '/search']
+ROUTE_NAMES = ['recipe_name', 'bag_name', 'tiddler_name']
+
 
 def entity_to_keys(entity):
     """
@@ -18,8 +26,83 @@ def entity_to_keys(entity):
     return DISPATCH[superclass_name(entity)](entity)
 
 
-def uri_to_keys(uri, environ):
-    pass
+def current_uri_keys(environ):
+    """
+    Return relevant keys for the current uri based on routing_args and
+    and other factors.
+    """
+    routing_keys = environ['wsgiorg.routing_args'][1]
+    request_uri = (environ.get('SCRIPT_NAME', '') +
+            environ.get('PATH_INFO', ''))
+
+    if _uri_is_global(request_uri):
+        return [DISPATCH[request_uri]()]
+
+    route_keys = [route_name for route_name in routing_keys
+            if route_name in ROUTE_NAMES]
+
+    surrogate_keys = []
+    if len(route_keys) == 1:
+        name = route_keys[0]
+        if '/tiddlers' not in request_uri:  # recipe or bag
+            surrogate_keys = [DISPATCH[name](get_route_value(environ, name))]
+        else:  # recipe or bags tiddlers
+            if name is 'recipe_name':
+                surrogate_keys = recipe_tiddlers_uri_keys(environ)
+            else:
+                surrogate_keys = [bag_tiddler_key(get_route_value(
+                    environ, name))]
+    else:  # a tiddler
+        if 'recipe_name' in route_keys:
+            surrogate_keys = recipe_tiddler_uri_keys(environ)
+        else:
+            surrogate_keys = bag_tiddler_uri_keys(environ)
+
+    return surrogate_keys
+
+
+def _uri_is_global(uri):
+    """
+    Return true if the uri is classed as global.
+    """
+    return uri in GLOBAL_URIS
+
+
+def bag_tiddler_uri_keys(environ):
+    """
+    We have a tiddler in a bag URI provide the tiddler key and the bag
+    tiddler key.
+    """
+    bag_name = get_route_value(environ, 'bag_name')
+    tiddler_title = get_route_value(environ, 'tiddler_name')
+    tiddler = Tiddler(tiddler_title, bag_name)
+    return [tiddler_key(tiddler), bag_tiddler_key(tiddler.bag)]
+
+
+def recipe_tiddler_uri_keys(environ):
+    """
+    We have a tiddler in a recipe URI, provide the tiddler and the bag
+    tiddler key for all the bags in the recipe.
+    """
+    store = environ['tiddlyweb.store']
+    recipe_name = get_route_value(environ, 'recipe_name')
+    tiddler_title = get_route_value(environ, 'tiddler_name')
+    recipe = store.get(Recipe(recipe_name))
+    tiddler = Tiddler(tiddler_title)
+    bag = determine_bag_from_recipe(recipe, tiddler, environ)
+    tiddler.bag = bag.name
+    return [tiddler_key(tiddler)] + [bag_tiddler_key(bag) for bag, _
+            in recipe.get_recipe()]
+
+
+def recipe_tiddlers_uri_keys(environ):
+    """
+    All the tiddlers in the recipe, provide BT of all the bags.
+    """
+    store = environ['tiddlyweb.store']
+    recipe_name = get_route_value(environ, 'recipe_name')
+    recipe = store.get(Recipe(recipe_name))
+    return [bag_tiddler_key(bag) for bag, _ in recipe.get_recipe()]
 
 
 def bag_to_keys(bag):
@@ -108,5 +191,10 @@ DISPATCH = {
     'tiddler': tiddler_to_keys,
     'bag': bag_to_keys,
     'recipe': recipe_to_keys,
+    '/bags': bags_key,
+    '/recipes': recipes_key,
+    '/search': search_key,
+    'bag_name': bag_key,
+    'recipe_name': recipe_key,
 }
 
