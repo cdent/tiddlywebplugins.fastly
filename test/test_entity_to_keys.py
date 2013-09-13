@@ -15,6 +15,9 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 
+SEARCH_KEY = 'G:search'
+BAGS_KEY = 'G:bags'
+RECIPES_KEY = 'G:recipes'
 
 def test_tiddler_to_keys():
     """
@@ -27,14 +30,16 @@ def test_tiddler_to_keys():
 
     keys = entity_to_keys(tiddler)
 
-    assert len(keys) == 2
+    assert len(keys) == 3
     assert tiddler_key in keys
     assert bag_tiddler_key in keys
+    assert SEARCH_KEY in keys
 
 
 def test_bag_to_keys():
     """
-    A single bag's keys are itself and it's tiddlers.
+    A single bag's keys are itself and it's tiddlers, the global bags and
+    search.
     """
     bag = Bag('bagone')
 
@@ -43,14 +48,16 @@ def test_bag_to_keys():
 
     keys = entity_to_keys(bag)
 
-    assert len(keys) == 2
+    assert len(keys) == 4
     assert bag_key in keys
     assert bag_tiddler_key in keys
+    assert BAGS_KEY in keys
+    assert SEARCH_KEY in keys
 
 
 def test_recipe_to_keys():
     """
-    A single recipe's keys are itself and it's tiddlers.
+    A single recipe's keys are itself and it's tiddlers and the global search.
     """
     recipe = Recipe('recipeone')
 
@@ -59,6 +66,7 @@ def test_recipe_to_keys():
 
     keys = entity_to_keys(recipe)
 
-    assert len(keys) == 2
+    assert len(keys) == 3
     assert recipe_key in keys
     assert recipe_tiddler_key in keys
+    assert RECIPES_KEY in keys

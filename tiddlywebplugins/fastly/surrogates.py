@@ -24,23 +24,26 @@ def uri_to_keys(uri, environ):
 
 def bag_to_keys(bag):
     """
-    Return keys for the bag itself and it's tiddlers.
+    Return keys for the bag itself, it's tiddlers and the bags list.
     """
-    return [bag_key(bag.name), bag_tiddler_key(bag.name)]
+    return [bag_key(bag.name), bag_tiddler_key(bag.name), bags_key(),
+            search_key()]
 
 
 def recipe_to_keys(recipe):
     """
-    Returns keys for the recipe itself and it's tiddlers.
+    Returns keys for the recipe itself, it's tiddlers and the recipes list.
     """
-    return [recipe_key(recipe.name), recipe_tiddler_key(recipe.name)]
+    return [recipe_key(recipe.name), recipe_tiddler_key(recipe.name),
+            recipes_key()]
 
 
 def tiddler_to_keys(tiddler):
     """
-    Return keys for the tiddler itself and the tiddler's bag's tiddlers.
+    Return keys for the tiddler itself and the tiddler's bag's tiddlers and
+    for the overarching search.
     """
-    return [tiddler_key(tiddler), bag_tiddler_key(tiddler.bag)]
+    return [tiddler_key(tiddler), bag_tiddler_key(tiddler.bag), search_key()]
 
 
 def bag_key(bag_name):
@@ -50,11 +53,32 @@ def bag_key(bag_name):
     return 'B:%s' % encode_name(bag_name)
 
 
+def bags_key():
+    """
+    Key for the recipes list.
+    """
+    return 'G:bags'
+
+
 def recipe_key(recipe_name):
     """
     Key for a single recipe.
     """
     return 'R:%s' % encode_name(recipe_name)
+
+
+def recipes_key():
+    """
+    Key for the recipes list.
+    """
+    return 'G:recipes'
+
+
+def search_key():
+    """
+    The search key is a global wipe of any search.
+    """
+    return 'G:search'
 
 
 def tiddler_key(tiddler):
