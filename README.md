@@ -106,7 +106,8 @@ By far the simplest options are:
 
 This means that we end up with per-user caches for most URIs but may
 be a valid second step (the first step is getting the purging
-working).
+working). Adding the cookie on the hash may also upset surrogate key
+handling.
 
 ### Varnish
 
