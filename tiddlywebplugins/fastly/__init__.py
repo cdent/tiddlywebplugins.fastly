@@ -7,6 +7,8 @@ __version__ = '0.1.0'
 __author__ = 'Chris Dent (cdent@peermore.com)'
 __license__ = 'BSD'
 
+from tiddlyweb.web.wsgi import PermissionsExceptor
+from .middleware import KeyAdder
 
 def init(config):
     """
@@ -20,3 +22,9 @@ def init(config):
             or 'fastly.api_key' not in config):
         raise TypeError('Please set both "fastly.server_id and '
                 + '"fastly.api_key" in tiddlywebconfig.py')
+
+    if 'selector' in config:
+        if KeyAdder not in config['server_response_filters']:
+            config['server_response_filters'].insert(
+                    config['server_response_filters'].index(
+                        PermissionsExceptor) + 1, KeyAdder)
