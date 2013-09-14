@@ -47,9 +47,9 @@ def current_uri_keys(environ):
         if '/tiddlers' not in request_uri:  # recipe or bag
             surrogate_keys = [DISPATCH[name](get_route_value(environ, name))]
         else:  # recipe or bags tiddlers
-            if name is 'recipe_name':
+            if name == 'recipe_name':
                 surrogate_keys = recipe_tiddlers_uri_keys(environ)
-            elif name is 'bag_name':
+            elif name == 'bag_name':
                 surrogate_keys = [bag_tiddler_key(get_route_value(
                     environ, name))]
     else:  # a tiddler, revisions collection or single revision
