@@ -13,7 +13,7 @@ from tiddlyweb.web.util import encode_name, get_route_value
 
 
 GLOBAL_URIS = ['/recipes', '/bags', '/search']
-ROUTE_NAMES = ['recipe_name', 'bag_name', 'tiddler_name']
+ROUTE_NAMES = ['recipe_name', 'bag_name', 'tiddler_name', 'revision']
 
 
 def entity_to_keys(entity):
@@ -49,14 +49,16 @@ def current_uri_keys(environ):
         else:  # recipe or bags tiddlers
             if name is 'recipe_name':
                 surrogate_keys = recipe_tiddlers_uri_keys(environ)
-            else:
+            elif name is 'bag_name':
                 surrogate_keys = [bag_tiddler_key(get_route_value(
                     environ, name))]
-    else:  # a tiddler
+    else:  # a tiddler, revisions collection or single revision
+        is_revision = 'revision' in route_keys
         if 'recipe_name' in route_keys:
             surrogate_keys = recipe_tiddler_uri_keys(environ)
-        else:
-            surrogate_keys = bag_tiddler_uri_keys(environ)
+        elif 'bag_name' in route_keys:
+            if not is_revision:
+                surrogate_keys = bag_tiddler_uri_keys(environ)
 
     return surrogate_keys
 

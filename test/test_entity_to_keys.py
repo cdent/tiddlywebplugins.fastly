@@ -110,6 +110,35 @@ def test_bag_tiddler_uri_keys():
     assert 'BT:bagone' in keys
     assert 'T:bagone/tidone' in keys
 
+    # revisions should have both T and BT because when a bag is
+    # deleted we purge just BT which needs to purge revisions.
+    environ = {
+        'wsgiorg.routing_args': [None, {
+            'bag_name': 'bagone',
+            'tiddler_name': 'tidone'
+        }],
+        'PATH_INFO': '/bags/bagone/tidlers/tidone/revisions'
+    }
+
+    keys = current_uri_keys(environ)
+
+    assert len(keys) == 2
+    assert 'BT:bagone' in keys
+    assert 'T:bagone/tidone' in keys
+
+    # single revision should have _no_keys, never purge
+    environ = {
+        'wsgiorg.routing_args': [None, {
+            'bag_name': 'bagone',
+            'tiddler_name': 'tidone',
+            'revision': '1'
+        }],
+        'PATH_INFO': '/bags/bagone/tidlers/tidone/revisions/1'
+    }
+
+    keys = current_uri_keys(environ)
+
+    assert len(keys) == 0
 
 def test_bag_tiddlers_uri_keys():
     """
@@ -150,6 +179,42 @@ def test_recipe_tiddler_uri_keys():
             'recipe_name': 'recipeone',
             'tiddler_name': 'tidone'
         }]
+    }
+
+    keys = current_uri_keys(environ)
+    assert len(keys) == 4
+    assert 'T:bagone/tidone' in keys
+    assert 'BT:bagone' in keys
+    assert 'BT:bagtwo' in keys
+    assert 'BT:bagthree' in keys
+
+    # revisions is the same thing, we purge them via BT
+    environ = {
+        'tiddlyweb.store': store,
+        'wsgiorg.routing_args': [None, {
+            'recipe_name': 'recipeone',
+            'tiddler_name': 'tidone'
+        }],
+        'PATH_INFO': '/recipes/recipone/tiddlers/tidone/revisions'
+    }
+
+    keys = current_uri_keys(environ)
+    assert len(keys) == 4
+    assert 'T:bagone/tidone' in keys
+    assert 'BT:bagone' in keys
+    assert 'BT:bagtwo' in keys
+    assert 'BT:bagthree' in keys
+
+    # single revision we can't be sure which tiddler is involved so we
+    # need to be purge-able
+    environ = {
+        'tiddlyweb.store': store,
+        'wsgiorg.routing_args': [None, {
+            'recipe_name': 'recipeone',
+            'tiddler_name': 'tidone',
+            'revision': '1'
+        }],
+        'PATH_INFO': '/recipes/recipeone/tidlers/tidone/revisions/1'
     }
 
     keys = current_uri_keys(environ)
