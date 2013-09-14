@@ -129,6 +129,27 @@ entity currently being written. These answer the questions:
 
 The first is used in the middleware, the second in the store HOOKS.
 
+Once keys can be generated we can make the calling code.
+
+The middleware is fairly near the outside the stack but inside
+httpexceptor:
+
+* checks the request method for `GET` (by this time `HEAD` will have
+  become `GET`)
+* since we are not having an exception we can assume this is a `200`
+* call current_uri_keys to get the keys as a list
+* add the Surrogate-Keys header with the keys space delimited, because
+  of URI-encoding we're safe for spaces
+
+The store hooks call the purge:
+
+* the same hook can be used on tiddler, recipe and bag put and delete
+* it calls entity_to_keys
+* does a purge on each key, using the available py-fastly
+* for now this will be done sync and linear
+* there are some race risks but no bigger than the ones that already
+  exist
+
 ## Discoveries, Hacks
 
 * While experimenting it was discovered that 302 responses are cached.
@@ -146,3 +167,6 @@ if ( beresp.status == 302 ) {
   know the URI?
 
 * PURGE are passed to api.fastly.com which is a twistedweb.
+
+* With varnish does a 304 response from the backend change the hash of
+  the cached thing?
