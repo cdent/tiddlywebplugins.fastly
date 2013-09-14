@@ -76,6 +76,18 @@ def test_rules():
         yield uri, assert_proper_keys, uri, keys
 
 
+def test_no_keys():
+    """
+    Test that a single revision of a tidlder in a bag has no keys.
+    And '/'.
+    """
+    for uri in ('/bags/bagone/tiddlers/tidone/revisions/1', '/'):
+        response, content = http.request('http://0.0.0.0' + uri)
+
+        assert response['status'] == '200'
+        assert 'surrogate-keys' not in response
+
+
 def assert_proper_keys(uri, expected_keys):
 
     response, content = http.request('http://0.0.0.0' + uri)
