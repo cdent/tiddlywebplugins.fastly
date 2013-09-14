@@ -41,8 +41,9 @@ def setup_module(module):
     except:
         pass
 
-    config['fastly.api_key'] = 'monkey'
-    config['fastly.service_id'] = 'monkey'
+    if 'fastly.api_key' not in config:
+        config['fastly.api_key'] = 'monkey'
+        config['fastly.service_id'] = 'monkey'
     config['system_plugins'] = ['tiddlywebplugins.fastly']
     from tiddlyweb.web import serve
     def app_fn():

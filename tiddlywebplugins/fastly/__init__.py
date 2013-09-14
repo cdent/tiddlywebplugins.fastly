@@ -9,6 +9,7 @@ __license__ = 'BSD'
 
 from tiddlyweb.web.wsgi import PermissionsExceptor
 from .middleware import KeyAdder
+from .commands import initialize
 
 def init(config):
     """
@@ -28,3 +29,5 @@ def init(config):
             config['server_response_filters'].insert(
                     config['server_response_filters'].index(
                         PermissionsExceptor) + 1, KeyAdder)
+    else:
+        initialize(config)
