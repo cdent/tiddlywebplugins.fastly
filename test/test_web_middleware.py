@@ -40,14 +40,19 @@ def test_bag_tiddler_has_keys():
     tiddler.text = 'Hi!'
     store.put(tiddler)
 
-    response, content = http.request(
-            'http://0.0.0.0/bags/bagone/tiddlers/tidone')
+    assert_proper_keys('/bags/bagone/tiddlers/tidone',
+            ['BT:bagone', 'T:bagone/tidone'])
+
+
+def assert_proper_keys(uri, expected_keys):
+
+    response, content = http.request('http://0.0.0.0' + uri)
 
     assert response['status'] == '200'
     assert 'surrogate-keys' in response
 
     keys = response['surrogate-keys'].split(' ')
 
-    assert len(keys) == 2
-    assert 'BT:bagone' in keys
-    assert 'T:bagone/tidone' in keys
+    assert len(keys) == len(expected_keys)
+    for expected in expected_keys:
+        assert expected in keys
