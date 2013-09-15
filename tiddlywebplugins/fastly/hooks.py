@@ -2,12 +2,18 @@
 Define the hooks that are called when an entity changes.
 """
 
+import logging
+
 from fastly import API
 from fastly.errors import *
 
 from tiddlyweb.store import HOOKS
 
 from .surrogates import entity_to_keys
+
+
+LOGGER = logging.getLogger(__name__)
+
 
 def entity_change_hook(store, entity):
     environ = store.environ
@@ -36,19 +42,18 @@ def entity_change_hook(store, entity):
     # fashion, but now we warn only.
     for key in keys:
         try:
-            #api.purge_key(service_id, key)
-            print "api.purge_key", service_id, key
-
+            LOGGER.debug('purging key: %s', key)
+            api.purge_key(service_id, key)
         except (AuthenticationError, InternalServerError, BadRequestError,
                 NotFoundError) as exc:
-            logging.warn('unable to purge key: %s. %s', key, exc)
+            LOGGER.warn('unable to purge key: %s. %s', key, exc)
     if http_host:
         try:
-            #api.purge_url(http_host, current_uri)
-            print "api.purge_url", http_host, current_uri
+            LOGGER.debug('purging uri: %s', current_uri)
+            api.purge_url(http_host, current_uri)
         except (AuthenticationError, InternalServerError, BadRequestError,
                 NotFoundError) as exc:
-            logging.warn('unable to purge url: %s. %s', current, exc)
+            LOGGER.warn('unable to purge url: %s. %s', current, exc)
 
 
 def initialize_hooks():
