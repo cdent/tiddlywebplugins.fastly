@@ -21,7 +21,7 @@ class KeyAdder(object):
             if environ['REQUEST_METHOD'] == 'GET':
                 surrogate_headers = current_uri_keys(environ)
                 if surrogate_headers:
-                    headers.append(('Surrogate-Keys',
+                    headers.append(('Surrogate-Key',
                         ' '.join(surrogate_headers)))
             return start_response(status, headers, exc_info)
 

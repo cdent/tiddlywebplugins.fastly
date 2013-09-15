@@ -87,7 +87,7 @@ def test_no_keys():
         response, content = http.request('http://0.0.0.0' + uri)
 
         assert response['status'] == '200'
-        assert 'surrogate-keys' not in response
+        assert 'surrogate-key' not in response
 
 
 def assert_proper_keys(uri, expected_keys):
@@ -95,9 +95,9 @@ def assert_proper_keys(uri, expected_keys):
     response, content = http.request('http://0.0.0.0' + uri)
 
     assert response['status'] == '200'
-    assert 'surrogate-keys' in response
+    assert 'surrogate-key' in response
 
-    keys = response['surrogate-keys'].split(' ')
+    keys = response['surrogate-key'].split(' ')
 
     assert len(keys) == len(expected_keys)
     for expected in expected_keys:
