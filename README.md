@@ -174,3 +174,8 @@ if ( beresp.status == 302 ) {
 * Is there a way in version oriented URIs to say "the one in use"?
 
 * The exceptions in fastly.errors should have the same base class?
+
+* Comparing from my house to fastly and notsofastly on
+  /recipes/default/tiddlers/TiddlyWebAdaptor `-c 1 -t 120`:
+  * fastly: 677 requests
+  * notsofastly: 134 requests
