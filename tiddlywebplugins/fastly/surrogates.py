@@ -93,8 +93,8 @@ def recipe_tiddler_uri_keys(environ):
     tiddler = Tiddler(tiddler_title)
     bag = determine_bag_from_recipe(recipe, tiddler, environ)
     tiddler.bag = bag.name
-    return [tiddler_key(tiddler)] + [bag_key(bag) for bag, _
-            in recipe.get_recipe()]
+    return [recipe_key(recipe_name), tiddler_key(tiddler)] + [
+            bag_key(bag) for bag, _ in recipe.get_recipe()]
 
 
 def recipe_tiddlers_uri_keys(environ):
@@ -104,7 +104,8 @@ def recipe_tiddlers_uri_keys(environ):
     store = environ['tiddlyweb.store']
     recipe_name = get_route_value(environ, 'recipe_name')
     recipe = store.get(Recipe(recipe_name))
-    return [bag_key(bag) for bag, _ in recipe.get_recipe()]
+    return [recipe_key(recipe_name)] + [
+            bag_key(bag) for bag, _ in recipe.get_recipe()]
 
 
 def bag_to_keys(bag):
@@ -118,8 +119,7 @@ def recipe_to_keys(recipe):
     """
     Returns keys for the recipe itself, it's tiddlers and the recipes list.
     """
-    return [recipe_key(recipe.name), recipe_tiddler_key(recipe.name),
-            recipes_key()]
+    return [recipe_key(recipe.name), recipes_key()]
 
 
 def tiddler_to_keys(tiddler):
@@ -171,13 +171,6 @@ def tiddler_key(tiddler):
     """
     return 'T:%s/%s' % (encode_name(tiddler.bag),
             encode_name(tiddler.title))
-
-
-def recipe_tiddler_key(recipe_name):
-    """
-    Key for a recipe's tiddlers.
-    """
-    return 'RT:%s' % encode_name(recipe_name)
 
 
 # XXX: this is rather naive and useless at the moment

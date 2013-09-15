@@ -172,3 +172,5 @@ if ( beresp.status == 302 ) {
   the cached thing?
 
 * Is there a way in version oriented URIs to say "the one in use"?
+
+* The exceptions in fastly.errors should have the same base class?

@@ -25,13 +25,14 @@ RULES = {
     '/bags/bagone/tiddlers': ['B:bagone'],
     '/recipes': ['G:recipes'],
     '/recipes/recipeone': ['R:recipeone'],
-    '/recipes/recipeone/tiddlers/tidone': ['T:bagone/tidone', 'B:bagone',
-        'B:bagtwo', 'B:bagthree'],
-    '/recipes/recipeone/tiddlers': ['B:bagone', 'B:bagtwo', 'B:bagthree'],
-    '/recipes/recipeone/tiddlers/tidone/revisions': ['T:bagone/tidone',
+    '/recipes/recipeone/tiddlers/tidone': ['R:recipeone', 'T:bagone/tidone',
         'B:bagone', 'B:bagtwo', 'B:bagthree'],
-    '/recipes/recipeone/tiddlers/tidone/revisions/1': ['T:bagone/tidone',
-        'B:bagone', 'B:bagtwo', 'B:bagthree'],
+    '/recipes/recipeone/tiddlers': ['R:recipeone', 'B:bagone', 'B:bagtwo',
+        'B:bagthree'],
+    '/recipes/recipeone/tiddlers/tidone/revisions': ['R:recipeone',
+        'T:bagone/tidone', 'B:bagone', 'B:bagtwo', 'B:bagthree'],
+    '/recipes/recipeone/tiddlers/tidone/revisions/1': ['R:recipeone',
+        'T:bagone/tidone', 'B:bagone', 'B:bagtwo', 'B:bagthree'],
     '/search?q=foo': ['G:search']
 }
 

@@ -80,13 +80,11 @@ def test_recipe_to_keys():
     recipe = Recipe('recipeone')
 
     recipe_key = 'R:recipeone'
-    recipe_tiddler_key = 'RT:recipeone'
 
     keys = entity_to_keys(recipe)
 
-    assert len(keys) == 3
+    assert len(keys) == 2
     assert recipe_key in keys
-    assert recipe_tiddler_key in keys
     assert RECIPES_KEY in keys
 
 
@@ -180,7 +178,8 @@ def test_recipe_tiddler_uri_keys():
     }
 
     keys = current_uri_keys(environ)
-    assert len(keys) == 4
+    assert len(keys) == 5
+    assert 'R:recipeone' in keys
     assert 'T:bagone/tidone' in keys
     assert 'B:bagone' in keys
     assert 'B:bagtwo' in keys
@@ -197,7 +196,8 @@ def test_recipe_tiddler_uri_keys():
     }
 
     keys = current_uri_keys(environ)
-    assert len(keys) == 4
+    assert len(keys) == 5
+    assert 'R:recipeone' in keys
     assert 'T:bagone/tidone' in keys
     assert 'B:bagone' in keys
     assert 'B:bagtwo' in keys
@@ -216,7 +216,8 @@ def test_recipe_tiddler_uri_keys():
     }
 
     keys = current_uri_keys(environ)
-    assert len(keys) == 4
+    assert len(keys) == 5
+    assert 'R:recipeone' in keys
     assert 'T:bagone/tidone' in keys
     assert 'B:bagone' in keys
     assert 'B:bagtwo' in keys
@@ -238,7 +239,8 @@ def test_recipes_tiddlers_uri_keys():
     }
 
     keys = current_uri_keys(environ)
-    assert len(keys) == 3
+    assert len(keys) == 4
+    assert 'R:recipeone' in keys
     assert 'B:bagone' in keys
     assert 'B:bagtwo' in keys
     assert 'B:bagthree' in keys

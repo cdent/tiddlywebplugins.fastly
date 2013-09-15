@@ -13,14 +13,14 @@ import pytest
 
 from tiddlyweb.config import config
 from tiddlyweb.manage import handle
-from tiddlywebplugins.fastly.commands import initialize
+from tiddlywebplugins.fastly.commands import initialize_commands
 
 # skip if this is not cdent
 pytestmark = pytest.mark.skipif("os.environ['USER'] != 'cdent'")
 
 
 def setup_module(module):
-    initialize(config)
+    initialize_commands(config)
 
 
 def test_service(capsys):

@@ -8,7 +8,7 @@ from pprint import pprint
 
 from tiddlyweb.manage import make_command, std_error_message
 
-def initialize(config):
+def initialize_commands(config):
     """
     ``config`` is closed over the twanager commands during
     initialization from init.
