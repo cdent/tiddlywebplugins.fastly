@@ -29,8 +29,10 @@ def entity_change_hook(store, entity):
         except KeyError:
             pass
     current_uri = (environ.get('SCRIPT_NAME', '') 
-            + environ.get('PATH_INFO', '')
-            + '?' + environ.get('QUERY_STRING', ''))
+            + environ.get('PATH_INFO', ''))
+    query_string = environ.get('QUERY_STRING', '')
+    if query_string:
+        current_uri = current_uri + '?' + query_string
 
     # Setup fastly comms.
     service_id = config['fastly.service_id']
