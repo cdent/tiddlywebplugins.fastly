@@ -170,3 +170,5 @@ if ( beresp.status == 302 ) {
 
 * With varnish does a 304 response from the backend change the hash of
   the cached thing?
+
+* Is there a way in version oriented URIs to say "the one in use"?

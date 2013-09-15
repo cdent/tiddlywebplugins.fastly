@@ -20,18 +20,18 @@ from tiddlywebplugins.utils import get_store
 RULES = {
     '/bags': ['G:bags'],
     '/bags/bagone': ['B:bagone'],
-    '/bags/bagone/tiddlers/tidone': ['BT:bagone', 'T:bagone/tidone'],
-    '/bags/bagone/tiddlers/tidone/revisions': ['BT:bagone', 'T:bagone/tidone'],
-    '/bags/bagone/tiddlers': ['BT:bagone'],
+    '/bags/bagone/tiddlers/tidone': ['B:bagone', 'T:bagone/tidone'],
+    '/bags/bagone/tiddlers/tidone/revisions': ['B:bagone', 'T:bagone/tidone'],
+    '/bags/bagone/tiddlers': ['B:bagone'],
     '/recipes': ['G:recipes'],
     '/recipes/recipeone': ['R:recipeone'],
-    '/recipes/recipeone/tiddlers/tidone': ['T:bagone/tidone', 'BT:bagone',
-        'BT:bagtwo', 'BT:bagthree'],
-    '/recipes/recipeone/tiddlers': ['BT:bagone', 'BT:bagtwo', 'BT:bagthree'],
+    '/recipes/recipeone/tiddlers/tidone': ['T:bagone/tidone', 'B:bagone',
+        'B:bagtwo', 'B:bagthree'],
+    '/recipes/recipeone/tiddlers': ['B:bagone', 'B:bagtwo', 'B:bagthree'],
     '/recipes/recipeone/tiddlers/tidone/revisions': ['T:bagone/tidone',
-        'BT:bagone', 'BT:bagtwo', 'BT:bagthree'],
+        'B:bagone', 'B:bagtwo', 'B:bagthree'],
     '/recipes/recipeone/tiddlers/tidone/revisions/1': ['T:bagone/tidone',
-        'BT:bagone', 'BT:bagtwo', 'BT:bagthree'],
+        'B:bagone', 'B:bagtwo', 'B:bagthree'],
     '/search?q=foo': ['G:search']
 }
 

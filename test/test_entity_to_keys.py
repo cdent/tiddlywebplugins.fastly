@@ -38,7 +38,7 @@ def setup_module(module):
 
 def test_tiddler_to_keys():
     """
-    A single tiddler's keys are itself and its bag's tiddlers.
+    A single tiddler's keys are itself and its bag.
 
     TODO: tiddler revisions keys. We don't need to worry about single
     revisions as they are immutable so can cache forever.
@@ -46,7 +46,7 @@ def test_tiddler_to_keys():
     tiddler = Tiddler('tidone', 'bagone')
 
     tiddler_key = 'T:bagone/tidone'
-    bag_tiddler_key = 'BT:bagone'
+    bag_tiddler_key = 'B:bagone'
 
     keys = entity_to_keys(tiddler)
 
@@ -58,19 +58,17 @@ def test_tiddler_to_keys():
 
 def test_bag_to_keys():
     """
-    A single bag's keys are itself and it's tiddlers, the global bags and
+    A single bag's keys are itself and it's bag, the global bags and
     search.
     """
     bag = Bag('bagone')
 
     bag_key = 'B:bagone'
-    bag_tiddler_key = 'BT:bagone'
 
     keys = entity_to_keys(bag)
 
-    assert len(keys) == 4
+    assert len(keys) == 3
     assert bag_key in keys
-    assert bag_tiddler_key in keys
     assert BAGS_KEY in keys
     assert SEARCH_KEY in keys
 
@@ -94,7 +92,7 @@ def test_recipe_to_keys():
 
 def test_bag_tiddler_uri_keys():
     """
-    A tiddler in a bag's uri keys are itself and its bag's tiddlers. When
+    A tiddler in a bag's uri keys are itself and its bag. When
     this tiddler or it's bag changes, it will be purged.
     """
     environ = {
@@ -107,7 +105,7 @@ def test_bag_tiddler_uri_keys():
     keys = current_uri_keys(environ)
 
     assert len(keys) == 2
-    assert 'BT:bagone' in keys
+    assert 'B:bagone' in keys
     assert 'T:bagone/tidone' in keys
 
     # revisions should have both T and BT because when a bag is
@@ -123,7 +121,7 @@ def test_bag_tiddler_uri_keys():
     keys = current_uri_keys(environ)
 
     assert len(keys) == 2
-    assert 'BT:bagone' in keys
+    assert 'B:bagone' in keys
     assert 'T:bagone/tidone' in keys
 
     # single revision should have _no_keys, never purge
@@ -142,7 +140,7 @@ def test_bag_tiddler_uri_keys():
 
 def test_bag_tiddlers_uri_keys():
     """
-    The keys for the tiddlers of a bag, is just the one BT.
+    The keys for the tiddlers of a bag, is just the one B.
     """
     environ = {
         'wsgiorg.routing_args': [None, {
@@ -154,7 +152,7 @@ def test_bag_tiddlers_uri_keys():
     keys = current_uri_keys(environ)
 
     assert len(keys) == 1
-    assert 'BT:bagone' in keys
+    assert 'B:bagone' in keys
 
 
 def test_recipe_tiddler_uri_keys():
@@ -184,9 +182,9 @@ def test_recipe_tiddler_uri_keys():
     keys = current_uri_keys(environ)
     assert len(keys) == 4
     assert 'T:bagone/tidone' in keys
-    assert 'BT:bagone' in keys
-    assert 'BT:bagtwo' in keys
-    assert 'BT:bagthree' in keys
+    assert 'B:bagone' in keys
+    assert 'B:bagtwo' in keys
+    assert 'B:bagthree' in keys
 
     # revisions is the same thing, we purge them via BT
     environ = {
@@ -201,9 +199,9 @@ def test_recipe_tiddler_uri_keys():
     keys = current_uri_keys(environ)
     assert len(keys) == 4
     assert 'T:bagone/tidone' in keys
-    assert 'BT:bagone' in keys
-    assert 'BT:bagtwo' in keys
-    assert 'BT:bagthree' in keys
+    assert 'B:bagone' in keys
+    assert 'B:bagtwo' in keys
+    assert 'B:bagthree' in keys
 
     # single revision we can't be sure which tiddler is involved so we
     # need to be purge-able
@@ -220,9 +218,9 @@ def test_recipe_tiddler_uri_keys():
     keys = current_uri_keys(environ)
     assert len(keys) == 4
     assert 'T:bagone/tidone' in keys
-    assert 'BT:bagone' in keys
-    assert 'BT:bagtwo' in keys
-    assert 'BT:bagthree' in keys
+    assert 'B:bagone' in keys
+    assert 'B:bagtwo' in keys
+    assert 'B:bagthree' in keys
 
 
 def test_recipes_tiddlers_uri_keys():
@@ -241,9 +239,9 @@ def test_recipes_tiddlers_uri_keys():
 
     keys = current_uri_keys(environ)
     assert len(keys) == 3
-    assert 'BT:bagone' in keys
-    assert 'BT:bagtwo' in keys
-    assert 'BT:bagthree' in keys
+    assert 'B:bagone' in keys
+    assert 'B:bagtwo' in keys
+    assert 'B:bagthree' in keys
 
 
 def test_recipe_uri_keys():

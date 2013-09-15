@@ -50,7 +50,7 @@ def current_uri_keys(environ):
             if name == 'recipe_name':
                 surrogate_keys = recipe_tiddlers_uri_keys(environ)
             elif name == 'bag_name':
-                surrogate_keys = [bag_tiddler_key(get_route_value(
+                surrogate_keys = [bag_key(get_route_value(
                     environ, name))]
     else:  # a tiddler, revisions collection or single revision
         is_revision = 'revision' in route_keys
@@ -78,7 +78,7 @@ def bag_tiddler_uri_keys(environ):
     bag_name = get_route_value(environ, 'bag_name')
     tiddler_title = get_route_value(environ, 'tiddler_name')
     tiddler = Tiddler(tiddler_title, bag_name)
-    return [tiddler_key(tiddler), bag_tiddler_key(tiddler.bag)]
+    return [tiddler_key(tiddler), bag_key(tiddler.bag)]
 
 
 def recipe_tiddler_uri_keys(environ):
@@ -93,7 +93,7 @@ def recipe_tiddler_uri_keys(environ):
     tiddler = Tiddler(tiddler_title)
     bag = determine_bag_from_recipe(recipe, tiddler, environ)
     tiddler.bag = bag.name
-    return [tiddler_key(tiddler)] + [bag_tiddler_key(bag) for bag, _
+    return [tiddler_key(tiddler)] + [bag_key(bag) for bag, _
             in recipe.get_recipe()]
 
 
@@ -104,15 +104,14 @@ def recipe_tiddlers_uri_keys(environ):
     store = environ['tiddlyweb.store']
     recipe_name = get_route_value(environ, 'recipe_name')
     recipe = store.get(Recipe(recipe_name))
-    return [bag_tiddler_key(bag) for bag, _ in recipe.get_recipe()]
+    return [bag_key(bag) for bag, _ in recipe.get_recipe()]
 
 
 def bag_to_keys(bag):
     """
     Return keys for the bag itself, it's tiddlers and the bags list.
     """
-    return [bag_key(bag.name), bag_tiddler_key(bag.name), bags_key(),
-            search_key()]
+    return [bag_key(bag.name), bags_key(), search_key()]
 
 
 def recipe_to_keys(recipe):
@@ -128,7 +127,7 @@ def tiddler_to_keys(tiddler):
     Return keys for the tiddler itself and the tiddler's bag's tiddlers and
     for the overarching search.
     """
-    return [tiddler_key(tiddler), bag_tiddler_key(tiddler.bag), search_key()]
+    return [tiddler_key(tiddler), bag_key(tiddler.bag), search_key()]
 
 
 def bag_key(bag_name):
@@ -172,13 +171,6 @@ def tiddler_key(tiddler):
     """
     return 'T:%s/%s' % (encode_name(tiddler.bag),
             encode_name(tiddler.title))
-
-
-def bag_tiddler_key(bag_name):
-    """
-    Key for a bag's tiddlers.
-    """
-    return 'BT:%s' % encode_name(bag_name)
 
 
 def recipe_tiddler_key(recipe_name):
