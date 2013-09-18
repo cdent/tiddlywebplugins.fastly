@@ -2,7 +2,33 @@
 The middleware that adds the surrogate keys.
 """
 
+from selector import Selector
+
 from .surrogates import current_uri_keys
+
+
+def initialize_routes(config):
+    """
+    Initialize a new selector that maps routes to surrogate-key
+    generation. At the moment this is an empty map to which things
+    can be added (see test_entity_to_keys).
+
+    However, it ought to be possible to put all the (relevant) routes
+    in this map and forgo the procedural code in current_uri_keys.
+
+    Another option is to, at startup, wrap handlers in another handler
+    which properly generates keys. That version needs to be tried to
+    see if it is more tidy than this.
+    """
+    fastly_selector = Selector()
+
+    def not_found(environ, start_response):
+        return []
+
+    fastly_selector.status404 = not_found
+    fastly_selector.status405 = not_found
+    config['fastly.selector'] = fastly_selector
+
 
 class KeyAdder(object):
     """

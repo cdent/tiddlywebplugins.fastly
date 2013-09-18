@@ -48,7 +48,6 @@ def current_uri_keys(environ):
     # run against the selctor
     if fastly_selector:
         surrogate_keys = fastly_selector(environ, None)
-        print surrogate_keys
         if surrogate_keys:
             return surrogate_keys
 

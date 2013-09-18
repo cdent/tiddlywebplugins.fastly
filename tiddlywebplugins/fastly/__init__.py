@@ -8,7 +8,7 @@ __author__ = 'Chris Dent (cdent@peermore.com)'
 __license__ = 'BSD'
 
 from tiddlyweb.web.wsgi import PermissionsExceptor
-from .middleware import KeyAdder
+from .middleware import KeyAdder, initialize_routes
 from .commands import initialize_commands
 from .hooks import initialize_hooks
 
@@ -33,4 +33,5 @@ def init(config):
     else:
         initialize_commands(config)
 
+    initialize_routes(config)
     initialize_hooks()

@@ -36,8 +36,8 @@ def setup_module(module):
     def friendly_keys(environ, start_response):
         return recipe_tiddlers_uri_keys(environ)
 
-    from selector import Selector
-    config['fastly.selector'] = Selector()
+    from tiddlywebplugins.fastly import init
+    init(config)
     config['fastly.selector'].add('/{recipe_name:segment}', GET=friendly_keys)
 
     module.store = get_store(config)
@@ -101,10 +101,12 @@ def test_bag_tiddler_uri_keys():
     this tiddler or it's bag changes, it will be purged.
     """
     environ = {
-        'wsgiorg.routing_args': [None, {
+        'wsgiorg.routing_args': [[], {
             'bag_name': 'bagone',
             'tiddler_name': 'tidone'
-        }]
+        }],
+        'REQUEST_METHOD': 'GET',
+        'PATH_INFO': '/bags/bagone/tiddlers/tidone'
     }
 
     keys = current_uri_keys(environ)
@@ -116,10 +118,12 @@ def test_bag_tiddler_uri_keys():
     # revisions should have both T and BT because when a bag is
     # deleted we purge just BT which needs to purge revisions.
     environ = {
-        'wsgiorg.routing_args': [None, {
+        'tiddlyweb.config': config,
+        'wsgiorg.routing_args': [[], {
             'bag_name': 'bagone',
             'tiddler_name': 'tidone'
         }],
+        'REQUEST_METHOD': 'GET',
         'PATH_INFO': '/bags/bagone/tidlers/tidone/revisions'
     }
 
@@ -131,11 +135,13 @@ def test_bag_tiddler_uri_keys():
 
     # single revision should have _no_keys, never purge
     environ = {
-        'wsgiorg.routing_args': [None, {
+        'tiddlyweb.config': config,
+        'wsgiorg.routing_args': [[], {
             'bag_name': 'bagone',
             'tiddler_name': 'tidone',
             'revision': '1'
         }],
+        'REQUEST_METHOD': 'GET',
         'PATH_INFO': '/bags/bagone/tidlers/tidone/revisions/1'
     }
 
@@ -148,10 +154,12 @@ def test_bag_tiddlers_uri_keys():
     The keys for the tiddlers of a bag, is just the one B.
     """
     environ = {
-        'wsgiorg.routing_args': [None, {
+        'tiddlyweb.config': config,
+        'wsgiorg.routing_args': [[], {
             'bag_name': 'bagone'
         }],
         'PATH_INFO': '/bags/bagone/tiddlers',
+        'REQUEST_METHOD': 'GET'
     }
 
     keys = current_uri_keys(environ)
@@ -177,11 +185,14 @@ def test_recipe_tiddler_uri_keys():
     store.put(recipe)
 
     environ = {
+        'tiddlyweb.config': config,
         'tiddlyweb.store': store,
-        'wsgiorg.routing_args': [None, {
+        'wsgiorg.routing_args': [[], {
             'recipe_name': 'recipeone',
             'tiddler_name': 'tidone'
-        }]
+        }],
+        'PATH_INFO': '/recipes/recipone/tiddlers/tidone',
+        'REQUEST_METHOD': 'GET'
     }
 
     keys = current_uri_keys(environ)
@@ -194,12 +205,14 @@ def test_recipe_tiddler_uri_keys():
 
     # revisions is the same thing, we purge them via BT
     environ = {
+        'tiddlyweb.config': config,
         'tiddlyweb.store': store,
-        'wsgiorg.routing_args': [None, {
+        'wsgiorg.routing_args': [[], {
             'recipe_name': 'recipeone',
             'tiddler_name': 'tidone'
         }],
-        'PATH_INFO': '/recipes/recipone/tiddlers/tidone/revisions'
+        'PATH_INFO': '/recipes/recipone/tiddlers/tidone/revisions',
+        'REQUEST_METHOD': 'GET'
     }
 
     keys = current_uri_keys(environ)
@@ -213,13 +226,15 @@ def test_recipe_tiddler_uri_keys():
     # single revision we can't be sure which tiddler is involved so we
     # need to be purge-able
     environ = {
+        'tiddlyweb.config': config,
         'tiddlyweb.store': store,
-        'wsgiorg.routing_args': [None, {
+        'wsgiorg.routing_args': [[], {
             'recipe_name': 'recipeone',
             'tiddler_name': 'tidone',
             'revision': '1'
         }],
-        'PATH_INFO': '/recipes/recipeone/tidlers/tidone/revisions/1'
+        'PATH_INFO': '/recipes/recipeone/tidlers/tidone/revisions/1',
+        'REQUEST_METHOD': 'GET'
     }
 
     keys = current_uri_keys(environ)
@@ -238,11 +253,13 @@ def test_recipes_tiddlers_uri_keys():
     We use the recipes store above.
     """
     environ = {
+        'tiddlyweb.config': config,
         'tiddlyweb.store': store,
-        'wsgiorg.routing_args': [None, {
+        'wsgiorg.routing_args': [[], {
             'recipe_name': 'recipeone',
         }],
         'PATH_INFO': '/recipes/recipeone/tiddlers',
+        'REQUEST_METHOD': 'GET'
     }
 
     keys = current_uri_keys(environ)
@@ -258,9 +275,12 @@ def test_recipe_uri_keys():
     When requesting a single recipe the key is just that recipe's key.
     """
     environ = {
-        'wsgiorg.routing_args': [None, {
+        'tiddlyweb.config': config,
+        'wsgiorg.routing_args': [[], {
             'recipe_name': 'recipeone',
         }],
+        'PATH_INFO': '/recipes/reciponeone',
+        'REQUEST_METHOD': 'GET'
     }
     keys = current_uri_keys(environ)
     assert len(keys) == 1
@@ -272,9 +292,11 @@ def test_recipes_uri_keys():
     When requesting all recipes the key is the global recipes key.
     """
     environ = {
-        'wsgiorg.routing_args': [None, {
+        'tiddlyweb.config': config,
+        'wsgiorg.routing_args': [[], {
         }],
-        'PATH_INFO': '/recipes'
+        'PATH_INFO': '/recipes',
+        'REQUEST_METHOD': 'GET'
     }
     keys = current_uri_keys(environ)
     assert len(keys) == 1
@@ -286,9 +308,12 @@ def test_bag_uri_keys():
     When requesting a single bag the key is just that bag's key.
     """
     environ = {
-        'wsgiorg.routing_args': [None, {
+        'tiddlyweb.config': config,
+        'wsgiorg.routing_args': [[], {
             'bag_name': 'bagone',
         }],
+        'PATH_INFO': '/bags/bagone',
+        'REQUEST_METHOD': 'GET'
     }
     keys = current_uri_keys(environ)
     assert len(keys) == 1
@@ -300,9 +325,11 @@ def test_bags_uri_keys():
     When requesting all bags the key is the global bags key.
     """
     environ = {
-        'wsgiorg.routing_args': [None, {
+        'tiddlyweb.config': config,
+        'wsgiorg.routing_args': [[], {
         }],
-        'PATH_INFO': '/bags'
+        'PATH_INFO': '/bags',
+        'REQUEST_METHOD': 'GET'
     }
     keys = current_uri_keys(environ)
     assert len(keys) == 1
@@ -315,9 +342,11 @@ def test_search_uri_keys():
     to determine alternatives.
     """
     environ = {
-        'wsgiorg.routing_args': [None, {
+        'tiddlyweb.config': config,
+        'wsgiorg.routing_args': [[], {
         }],
-        'PATH_INFO': '/search'
+        'PATH_INFO': '/search',
+        'REQUEST_METHOD': 'GET'
     }
     keys = current_uri_keys(environ)
     assert len(keys) == 1
