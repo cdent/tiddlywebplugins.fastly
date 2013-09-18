@@ -13,7 +13,7 @@ These should be better at testing unusual conditions.
 import shutil
 
 from tiddlywebplugins.fastly.surrogates import (entity_to_keys,
-        current_uri_keys)
+        current_uri_keys, recipe_tiddlers_uri_keys)
 
 from tiddlyweb.config import config
 from tiddlyweb.model.bag import Bag
@@ -32,6 +32,13 @@ def setup_module(module):
         shutil.rmtree('store')
     except:
         pass
+
+    def friendly_keys(environ, start_response):
+        return recipe_tiddlers_uri_keys(environ)
+
+    from selector import Selector
+    config['fastly.selector'] = Selector()
+    config['fastly.selector'].add('/{recipe_name:segment}', GET=friendly_keys)
 
     module.store = get_store(config)
 
@@ -315,3 +322,26 @@ def test_search_uri_keys():
     keys = current_uri_keys(environ)
     assert len(keys) == 1
     assert SEARCH_KEY in keys
+
+
+def test_configured_uri_keys():
+    """
+    URI handling needs to be extensible.
+    """
+    environ = {
+        'tiddlyweb.store': store,
+        'tiddlyweb.config': config,
+        'wsgiorg.routing_args': [[], {
+            'recipe_name': 'recipeone',
+            }],
+        'PATH_INFO': '/recipeone',
+        'SCRIPT_NAME': '',
+        'REQUEST_METHOD': 'GET'
+    }
+
+    keys = current_uri_keys(environ)
+    assert len(keys) == 4
+    assert 'R:recipeone' in keys
+    assert 'B:bagone' in keys
+    assert 'B:bagtwo' in keys
+    assert 'B:bagthree' in keys

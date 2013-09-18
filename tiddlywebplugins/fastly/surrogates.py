@@ -31,9 +31,11 @@ def current_uri_keys(environ):
     Return relevant keys for the current uri based on routing_args and
     and other factors.
     """
+    config = environ.get('tiddlyweb.config', {})
     routing_keys = environ['wsgiorg.routing_args'][1]
     request_uri = (environ.get('SCRIPT_NAME', '') +
             environ.get('PATH_INFO', ''))
+    fastly_selector = config.get('fastly.selector')
 
     if _uri_is_global(request_uri):
         return [DISPATCH[request_uri]()]
@@ -42,6 +44,14 @@ def current_uri_keys(environ):
             if route_name in ROUTE_NAMES]
 
     surrogate_keys = []
+
+    # run against the selctor
+    if fastly_selector:
+        surrogate_keys = fastly_selector(environ, None)
+        print surrogate_keys
+        if surrogate_keys:
+            return surrogate_keys
+
     if len(route_keys) == 1:
         name = route_keys[0]
         if '/tiddlers' not in request_uri:  # recipe or bag
