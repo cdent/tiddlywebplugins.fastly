@@ -6,7 +6,7 @@ effectively cache single
 [recipes](http://tiddlyweb.tiddlyspace.com/recipe),
 [bags](http://tiddlyweb.tiddlyspace.com/bag), [tiddlers](http://tiddlyweb.tiddlyspace.comtiddler) and collections thereof.
 
-See [the design note](DESIGNNOTES.md) for background info.
+See [the design notes](DESIGNNOTES.md) for background info.
 
 # Why
 
