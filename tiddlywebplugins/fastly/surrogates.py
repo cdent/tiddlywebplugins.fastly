@@ -45,13 +45,16 @@ def current_uri_keys(environ):
 
     surrogate_keys = []
 
-    if fastly_selector:
-        # Find the selector method for this path (if any)
-        method = fastly_selector.select(request_uri, 'GET')[0]
-        surrogate_keys = method(environ, None)
-        if surrogate_keys:
-            return surrogate_keys
-
+    try:
+        if fastly_selector:
+            # Find the selector method for this path (if any)
+            method = fastly_selector.select(request_uri, 'GET')[0]
+            surrogate_keys = method(environ, None)
+            if surrogate_keys:
+                return surrogate_keys
+    except KeyError:
+        pass
+            
     if len(route_keys) == 1:
         name = route_keys[0]
         if '/tiddlers' not in request_uri:  # recipe or bag
