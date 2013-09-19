@@ -45,9 +45,10 @@ def current_uri_keys(environ):
 
     surrogate_keys = []
 
-    # run against the selctor
     if fastly_selector:
-        surrogate_keys = fastly_selector(environ, None)
+        # Find the selector method for this path (if any)
+        method = fastly_selector.select(request_uri, 'GET')[0]
+        surrogate_keys = method(environ, None)
         if surrogate_keys:
             return surrogate_keys
 
