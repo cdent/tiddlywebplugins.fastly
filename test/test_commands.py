@@ -40,11 +40,11 @@ def test_version(capsys):
 def test_active_version(capsys):
     handle(['', 'fastlyactiveversion'])
     results, err = capsys.readouterr()
-    assert results.strip() == '2'
+    assert results.strip() == '3'
 
 
 def test_domain(capsys):
-    handle(['', 'fastlydomain', '2', 'fastiddly.peermore.com'])
+    handle(['', 'fastlydomain', '3', 'fastiddly.peermore.com'])
     results, err = capsys.readouterr()
     assert config['fastly.service_id'] in results
 
