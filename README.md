@@ -22,10 +22,11 @@ lightweight while still providing zoom to the users.
 
 An existing TiddlyWeb
 [instance](http://tiddlyweb.tiddlyspace.com/instance) can be updated
-to use this plugin as follows (_note_: The first step is not yet true
-as the plugin has not been released to PyPI yet, please clone the repo
-and install from there):
+to use this plugin as follows (*note*: The second step is not yet true
+as the plugin has not been released to PyPI yet, please clone this
+repo and install from there):
 
+* Install [fastly-py](https://github.com/fastly/fastly-py).
 * Install the plugin: `pip install -U tiddlywebplugins.fastly`.
 * Edit
   [tiddlywebconfig.py](http://tiddlyweb.tiddlyspace.com/tiddlywebconfig.py)
