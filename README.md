@@ -57,6 +57,21 @@ Once installed three new pieces of functionality will be present:
 * When entities are written to the store (via `store.put`) a `HOOK`
   sends a `purge_key` request to the Fastly API.
 
+# Non-Caching URIs
+
+By default Fastly will cache anything you give it. If you need to
+avoid this you can write custom VCL for various rules that will cause
+a `pass`. One convenient catch-all is to `pass` on anything which has
+not provided a `Surrogate-Key` header:
+
+```
+    if ( !beresp.http.surrogate-key ) { 
+        set beresp.ttl = 0s;
+        set beresp.grace = 0s;
+        return(pass);
+    }
+```
+
 # Custom URI Handlers
 
 The code for surrogate keys can be extended to generate keys for
