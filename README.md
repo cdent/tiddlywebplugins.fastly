@@ -8,6 +8,10 @@ effectively cache single
 
 See [the design notes](DESIGNNOTES.md) for background info.
 
+This plugin is an experiment to explore what hurdles need to be
+overcome to get TiddlyWeb working in the Fastly context and generally
+to explore the Fastly ecosystem.
+
 # Why
 
 For fast.
@@ -71,6 +75,9 @@ not provided a `Surrogate-Key` header:
         return(pass);
     }
 ```
+
+This, however, is a sledgehammer. It is generally better to let most
+URIs cache and configure `pass` on specific URIs.
 
 # Custom URI Handlers
 

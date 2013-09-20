@@ -36,7 +36,11 @@ Therefore this plugin needs to accomplish one primary thing:
   straightforward for single entities with Store HOOKS.
 
 _This, of course, assumes that instant purges are in fact somewhat
-instant._
+instant._ Talking in the fastly IRC channel indicates that "It shouldn't
+take more than a second or two". That's fast enough for many situations
+but may lead to confusion where there are `PUTs` followed by immediate
+`GETs` for some reason. It's possible, however to confirm that purges are
+complete.
 
 It is less straightforward with entity collections, especially
 tiddlers produced by a recipe. Consider:
