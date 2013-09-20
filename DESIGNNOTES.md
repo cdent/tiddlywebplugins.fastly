@@ -39,8 +39,8 @@ _This, of course, assumes that instant purges are in fact somewhat
 instant._ Talking in the fastly IRC channel indicates that "It shouldn't
 take more than a second or two". That's fast enough for many situations
 but may lead to confusion where there are `PUTs` followed by immediate
-`GETs` for some reason. It's possible, however to confirm that purges are
-complete.
+`GETs` for some reason. Maybe at some point in the future there could be
+synchronous purges?
 
 It is less straightforward with entity collections, especially
 tiddlers produced by a recipe. Consider:
