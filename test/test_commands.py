@@ -40,7 +40,7 @@ def test_version(capsys):
 def test_active_version(capsys):
     handle(['', 'fastlyactiveversion'])
     results, err = capsys.readouterr()
-    assert results.strip() == '3'
+    assert results.strip() == '4'
 
 
 def test_domain(capsys):
