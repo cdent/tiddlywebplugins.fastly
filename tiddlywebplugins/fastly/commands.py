@@ -6,6 +6,8 @@ import fastly
 
 from pprint import pprint
 
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.policy import PermissionsError
 from tiddlyweb.manage import make_command, std_error_message
 
 def initialize_commands(config):
@@ -64,3 +66,39 @@ def initialize_commands(config):
             return
         std_error_message('ERROR: unable to purge')
         sys.exit(1)
+
+
+def get_public_bags(store):
+    """
+    List all the recipes in the store and return those which
+    should be readable by GUEST.
+    """
+    usersign = {'name': 'GUEST', 'roles': []}
+    for bag in store.list_bags():
+        try:
+            bag = store.get(bag)
+            bag.policy.allows(usersign, 'read')
+            yield bag
+        except PermissionsError:
+            pass
+
+
+def get_public_recipes(store):
+    """
+    List all the recipes in the store and return those which
+    should be readable by GUEST.
+
+    Note that this ignores recipe templates. Which is fine,
+    for now, they are ambiguity, so suck.
+    """
+    usersign = {'name': 'GUEST', 'roles': []}
+    for recipe in store.list_recipes():
+        try:
+            recipe = store.get(recipe)
+            recipe.policy.allows(usersign, 'read')
+            for bag, _ in recipe.get_recipe():
+                bag = store.get(Bag(bag))
+                bag.policy.allows(usersign, 'read')
+            yield recipe
+        except PermissionsError:
+            pass
