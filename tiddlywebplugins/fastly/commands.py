@@ -4,6 +4,9 @@ twanager tools for inspecting the fastly side of things.
 
 import fastly
 
+from fastly.errors import BadRequestError
+from fastly.models import Condition
+
 from pprint import pprint
 
 from tiddlyweb.model.bag import Bag
@@ -66,6 +69,59 @@ def initialize_commands(config):
             return
         std_error_message('ERROR: unable to purge')
         sys.exit(1)
+
+    @make_command()
+    def fastlycondition(args):
+        """View or create a condition: <version> <name> [<type> <statement>]."""
+        version = args[0]
+        name = args[1]
+        try:
+            condition_type = args[2]
+            statement = args[3]
+        except IndexError:
+            statement = None
+        try:
+            condition = api.condition(service_id, version, name)
+        except BadRequestError:
+            condition = Condition()
+        if statement:
+            condition.attrs['name'] = name
+            condition.attrs['statement'] = statement
+            condition.attrs['service_id'] = service_id
+            condition.attrs['version'] = version
+            condition.attrs['type'] = condition_type
+            condition.conn = api.conn
+            condition.save()
+        else:
+            pprint(condition.attrs)
+
+    @make_command()
+    def fastlyheader(args):
+        """View or create a header request: <version> <name> <condition>."""
+        version = args[0]
+        name = args[1]
+        try:
+            condition = args[2]
+        except IndexError:
+            condition = None
+        try:
+            header = api.header(service_id, version, name)
+            pprint(header.attrs)
+            if condition:
+                header.attrs['request_condition'] = condition
+                header.save()
+        except BadRequestError:
+            if condition:
+                header = Header()
+                header.attrs['name'] = name
+                header.attrs['service_id'] = service_id
+                header.attrs['version'] = version
+                header.attrs['request_condition'] = condition
+                header.conn = api.con
+                header.save()
+        #pprint(header.attrs)
+
+
 
 
 def get_public_bags(store):
